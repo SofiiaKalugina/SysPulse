@@ -8,6 +8,7 @@ from app.database import get_db
 from app.models.machine import Machine
 from app.models.metric import Metric
 from app.schemas.metric_schema import MetricCreate, MetricResponse
+from app.services.alert_service import check_metric_alerts
 
 router = APIRouter(
     prefix="/api/metrics",
@@ -52,13 +53,17 @@ def receive_metrics(
     db.commit()
     db.refresh(metric)
 
+    alerts_created = check_metric_alerts(db, machine, metric)
+
     return {
-        "status": "received",
-        "hostname": metric.hostname,
-        "machine_id": machine.id,
-        "received_at": datetime.utcnow().isoformat(),
-        "metric_id": metric.id,
-    }
+      "status": "received",
+      "hostname": metric.hostname,
+      "machine_id": machine.id,
+      "received_at": datetime.utcnow().isoformat(),
+      "metric_id": metric.id,
+      "alerts_created": alerts_created,
+}
+    
 
 
 @router.get("/latest", response_model=MetricResponse | dict)
