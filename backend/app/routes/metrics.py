@@ -1,10 +1,11 @@
-from datetime import datetime
+from datetime import datetime, timezone
 from typing import List
 
 from fastapi import APIRouter, Depends
 from sqlalchemy.orm import Session
 
 from app.database import get_db
+from app.models.machine import Machine
 from app.models.metric import Metric
 from app.schemas.metric_schema import MetricCreate, MetricResponse
 
@@ -19,7 +20,33 @@ def receive_metrics(
     metric_data: MetricCreate,
     db: Session = Depends(get_db),
 ) -> dict:
-    metric = Metric(**metric_data.model_dump())
+    machine = (
+        db.query(Machine)
+        .filter(Machine.hostname == metric_data.hostname)
+        .first()
+    )
+
+    if machine is None:
+        machine = Machine(
+            hostname=metric_data.hostname,
+            os_name=metric_data.os_name,
+            os_version=metric_data.os_version,
+            last_seen_at=datetime.now(timezone.utc),
+        )
+        db.add(machine)
+        db.commit()
+        db.refresh(machine)
+    else:
+        machine.os_name = metric_data.os_name
+        machine.os_version = metric_data.os_version
+        machine.last_seen_at = datetime.now(timezone.utc)
+        db.commit()
+        db.refresh(machine)
+
+    metric = Metric(
+        machine_id=machine.id,
+        **metric_data.model_dump(),
+    )
 
     db.add(metric)
     db.commit()
@@ -28,6 +55,7 @@ def receive_metrics(
     return {
         "status": "received",
         "hostname": metric.hostname,
+        "machine_id": machine.id,
         "received_at": datetime.utcnow().isoformat(),
         "metric_id": metric.id,
     }

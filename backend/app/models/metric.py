@@ -1,6 +1,7 @@
 from datetime import datetime, timezone
 
-from sqlalchemy import Column, DateTime, Float, Integer, String
+from sqlalchemy import Column, DateTime, Float, ForeignKey, Integer, String
+from sqlalchemy.orm import relationship
 
 from app.database import Base
 
@@ -9,6 +10,7 @@ class Metric(Base):
     __tablename__ = "metrics"
 
     id = Column(Integer, primary_key=True, index=True)
+    machine_id = Column(Integer, ForeignKey("machines.id"), nullable=False)
 
     hostname = Column(String, index=True, nullable=False)
     os_name = Column(String, nullable=False)
@@ -37,4 +39,5 @@ class Metric(Base):
         default=lambda: datetime.now(timezone.utc),
         nullable=False,
     )
-    
+
+    machine = relationship("Machine", back_populates="metrics")
