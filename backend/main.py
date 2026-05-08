@@ -1,4 +1,5 @@
 from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
 
 from app.database import Base, engine
 from app.models.alert import Alert
@@ -15,6 +16,14 @@ app = FastAPI(
     title="SysPulse API",
     description="Backend API for SysPulse monitoring platform",
     version="0.4.0",
+)
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
 )
 
 app.include_router(metrics_router)

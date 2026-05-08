@@ -1,0 +1,70 @@
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background: #111827;
+    color: #f9fafb;
+}
+
+header {
+    padding: 24px;
+    background: #020617;
+    border-bottom: 1px solid #1f2937;
+}
+
+header h1 {
+    margin: 0;
+    font-size: 32px;
+}
+
+header p {
+    margin: 8px 0 0;
+    color: #9ca3af;
+}
+
+main {
+    padding: 24px;
+}
+
+.grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+}
+
+.card {
+    background: #1f2937;
+    border: 1px solid #374151;
+    border-radius: 12px;
+    padding: 20px;
+}
+
+.card h2 {
+    margin-top: 0;
+}
+
+.item {
+    padding: 12px;
+    margin-bottom: 10px;
+    background: #111827;
+    border-radius: 8px;
+}
+
+.status-online {
+    color: #22c55e;
+    font-weight: bold;
+}
+
+.status-offline {
+    color: #ef4444;
+    font-weight: bold;
+}
+
+.alert {
+    color: #f97316;
+    font-weight: bold;
+}
+
+.small {
+    color: #9ca3af;
+    font-size: 14px;
+}
