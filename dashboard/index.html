@@ -7,11 +7,46 @@
 </head>
 <body>
     <header>
-        <h1>SysPulse</h1>
-        <p>Linux / system monitoring dashboard</p>
+        <div>
+            <h1>SysPulse</h1>
+            <p>Linux / system monitoring dashboard</p>
+        </div>
+        <div id="refresh-status" class="small">Loading...</div>
     </header>
 
     <main>
+        <section class="summary-grid">
+            <div class="summary-card">
+                <p>Total Machines</p>
+                <h2 id="total-machines">-</h2>
+            </div>
+
+            <div class="summary-card">
+                <p>Online Machines</p>
+                <h2 id="online-machines">-</h2>
+            </div>
+
+            <div class="summary-card">
+                <p>Active Alerts</p>
+                <h2 id="active-alerts">-</h2>
+            </div>
+
+            <div class="summary-card">
+                <p>Avg CPU</p>
+                <h2 id="avg-cpu">-</h2>
+            </div>
+
+            <div class="summary-card">
+                <p>Avg RAM</p>
+                <h2 id="avg-ram">-</h2>
+            </div>
+
+            <div class="summary-card">
+                <p>Avg Disk</p>
+                <h2 id="avg-disk">-</h2>
+            </div>
+        </section>
+
         <section class="grid">
             <div class="card">
                 <h2>Machines</h2>
@@ -27,6 +62,11 @@
                 <h2>Alerts</h2>
                 <div id="alerts">Loading...</div>
             </div>
+        </section>
+
+        <section class="card full-width">
+            <h2>Metrics History</h2>
+            <div id="metrics-history">Loading...</div>
         </section>
     </main>
 
