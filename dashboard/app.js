@@ -18,35 +18,14 @@ function formatPercent(value) {
     return `${Number(value).toFixed(1)}%`;
 }
 
-function renderSummary(machines, alerts, history) {
-    const totalMachines = machines.length;
-    const onlineMachines = machines.filter(machine => machine.status === "online").length;
-    const activeAlerts = alerts.filter(alert => alert.status === "active").length;
+function renderSummary(summary) {
+    document.getElementById("total-machines").textContent = summary.total_machines;
+    document.getElementById("online-machines").textContent = summary.online_machines;
+    document.getElementById("active-alerts").textContent = summary.active_alerts;
 
-    const avg = (values) => {
-        if (values.length === 0) {
-            return null;
-        }
-
-        const sum = values.reduce((total, value) => total + Number(value), 0);
-        return sum / values.length;
-    };
-
-    document.getElementById("total-machines").textContent = totalMachines;
-    document.getElementById("online-machines").textContent = onlineMachines;
-    document.getElementById("active-alerts").textContent = activeAlerts;
-
-    document.getElementById("avg-cpu").textContent = formatPercent(
-        avg(history.map(metric => metric.cpu_percent))
-    );
-
-    document.getElementById("avg-ram").textContent = formatPercent(
-        avg(history.map(metric => metric.ram_percent))
-    );
-
-    document.getElementById("avg-disk").textContent = formatPercent(
-        avg(history.map(metric => metric.disk_percent))
-    );
+    document.getElementById("avg-cpu").textContent = formatPercent(summary.avg_cpu);
+    document.getElementById("avg-ram").textContent = formatPercent(summary.avg_ram);
+    document.getElementById("avg-disk").textContent = formatPercent(summary.avg_disk);
 }
 
 function renderMachines(machines) {
@@ -166,12 +145,13 @@ function renderHistory(history) {
 
 async function loadDashboard() {
     try {
+        const summary = await fetchJson("/api/summary");
         const machines = await fetchJson("/api/machines");
         const latestMetric = await fetchJson("/api/metrics/latest");
         const alerts = await fetchJson("/api/alerts");
         const history = await fetchJson("/api/metrics/history?limit=10");
 
-        renderSummary(machines, alerts, history);
+        renderSummary(summary);
         renderMachines(machines);
         renderLatestMetric(latestMetric);
         renderAlerts(alerts);
@@ -188,6 +168,14 @@ async function loadDashboard() {
         document.getElementById("active-alerts-list").innerHTML = "<p>Backend unavailable.</p>";
         document.getElementById("resolved-alerts-list").innerHTML = "<p>Backend unavailable.</p>";
         document.getElementById("metrics-history").innerHTML = "<p>Backend unavailable.</p>";
+
+        document.getElementById("total-machines").textContent = "-";
+        document.getElementById("online-machines").textContent = "-";
+        document.getElementById("active-alerts").textContent = "-";
+        document.getElementById("avg-cpu").textContent = "-";
+        document.getElementById("avg-ram").textContent = "-";
+        document.getElementById("avg-disk").textContent = "-";
+
         document.getElementById("refresh-status").textContent = "Backend unavailable.";
     }
 }
