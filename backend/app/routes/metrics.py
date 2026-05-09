@@ -59,8 +59,7 @@ def receive_metrics(
      "status": "received",
      "hostname": metric.hostname,
      "machine_id": machine.id,
-     "received_at": datetime.utcnow().isoformat(),
-     "metric_id": metric.id,
+    "received_at": datetime.now(timezone.utc).isoformat(),     "metric_id": metric.id,
      "alerts_created": alert_result["alerts_created"],
      "alerts_resolved": alert_result["alerts_resolved"],
 }

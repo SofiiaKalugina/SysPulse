@@ -1,4 +1,4 @@
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, ConfigDict, Field
 
 
 class MetricCreate(BaseModel):
@@ -29,5 +29,4 @@ class MetricResponse(MetricCreate):
     id: int
     machine_id: int
 
-    class Config:
-        from_attributes = True
+    model_config = ConfigDict(from_attributes=True)
