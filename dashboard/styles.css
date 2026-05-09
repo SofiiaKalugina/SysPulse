@@ -55,7 +55,7 @@ main {
 
 .grid {
     display: grid;
-    grid-template-columns: repeat(3, 1fr);
+    grid-template-columns: repeat(4, 1fr);
     gap: 16px;
 }
 
@@ -99,6 +99,51 @@ main {
 .small {
     color: #9ca3af;
     font-size: 14px;
+}
+
+.badge {
+    display: inline-block;
+    padding: 4px 8px;
+    border-radius: 999px;
+    font-size: 12px;
+    font-weight: bold;
+    text-transform: uppercase;
+}
+
+.badge-high {
+    background: #7f1d1d;
+    color: #fecaca;
+}
+
+.badge-critical {
+    background: #450a0a;
+    color: #fca5a5;
+}
+
+.badge-medium {
+    background: #78350f;
+    color: #fde68a;
+}
+
+.badge-low {
+    background: #064e3b;
+    color: #a7f3d0;
+}
+
+.badge-active {
+    background: #7c2d12;
+    color: #fed7aa;
+}
+
+.badge-resolved {
+    background: #14532d;
+    color: #bbf7d0;
+}
+
+.alert-meta {
+    margin-top: 8px;
+    font-size: 13px;
+    color: #9ca3af;
 }
 
 table {

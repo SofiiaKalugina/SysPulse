@@ -89,23 +89,43 @@ function renderLatestMetric(metricData) {
     `;
 }
 
-function renderAlerts(alerts) {
-    const container = document.getElementById("alerts");
-
-    if (alerts.length === 0) {
-        container.innerHTML = "<p>No alerts.</p>";
-        return;
-    }
-
-    container.innerHTML = alerts.map(alert => `
+function renderAlertItem(alert) {
+    return `
         <div class="item">
-            <p class="alert">${alert.severity.toUpperCase()}</p>
+            <p>
+                <span class="badge badge-${alert.severity}">${alert.severity}</span>
+                <span class="badge badge-${alert.status}">${alert.status}</span>
+            </p>
+            <p><strong>${alert.metric_name}</strong></p>
             <p>${alert.message}</p>
             <p>Value: ${formatPercent(alert.metric_value)}</p>
             <p>Threshold: ${formatPercent(alert.threshold)}</p>
-            <p>Status: ${alert.status}</p>
+            <div class="alert-meta">
+                <p>Created: ${alert.created_at}</p>
+                ${alert.resolved_at ? `<p>Resolved: ${alert.resolved_at}</p>` : ""}
+            </div>
         </div>
-    `).join("");
+    `;
+}
+
+function renderAlerts(alerts) {
+    const activeContainer = document.getElementById("active-alerts-list");
+    const resolvedContainer = document.getElementById("resolved-alerts-list");
+
+    const activeAlerts = alerts.filter(alert => alert.status === "active");
+    const resolvedAlerts = alerts.filter(alert => alert.status === "resolved");
+
+    if (activeAlerts.length === 0) {
+        activeContainer.innerHTML = "<p>No active alerts.</p>";
+    } else {
+        activeContainer.innerHTML = activeAlerts.map(renderAlertItem).join("");
+    }
+
+    if (resolvedAlerts.length === 0) {
+        resolvedContainer.innerHTML = "<p>No resolved alerts.</p>";
+    } else {
+        resolvedContainer.innerHTML = resolvedAlerts.map(renderAlertItem).join("");
+    }
 }
 
 function renderHistory(history) {
@@ -165,7 +185,8 @@ async function loadDashboard() {
 
         document.getElementById("machines").innerHTML = "<p>Backend unavailable.</p>";
         document.getElementById("latest-metrics").innerHTML = "<p>Backend unavailable.</p>";
-        document.getElementById("alerts").innerHTML = "<p>Backend unavailable.</p>";
+        document.getElementById("active-alerts-list").innerHTML = "<p>Backend unavailable.</p>";
+        document.getElementById("resolved-alerts-list").innerHTML = "<p>Backend unavailable.</p>";
         document.getElementById("metrics-history").innerHTML = "<p>Backend unavailable.</p>";
         document.getElementById("refresh-status").textContent = "Backend unavailable.";
     }
