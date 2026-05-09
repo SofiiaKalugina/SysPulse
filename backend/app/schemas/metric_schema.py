@@ -27,6 +27,7 @@ class MetricCreate(BaseModel):
 
 class MetricResponse(MetricCreate):
     id: int
+    machine_id: int
 
     class Config:
         from_attributes = True
