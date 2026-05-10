@@ -1,3 +1,4 @@
+import importlib
 import os
 import sys
 from pathlib import Path
@@ -15,10 +16,8 @@ os.environ["DATABASE_URL"] = f"sqlite:///{TEST_DATABASE_PATH.as_posix()}"
 
 sys.path.insert(0, str(PROJECT_ROOT))
 
-from main import app  # noqa: E402
-
-
-client = TestClient(app)
+app_module = importlib.import_module("main")
+client = TestClient(app_module.app)
 
 
 def sample_metric_payload() -> dict:

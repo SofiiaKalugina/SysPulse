@@ -1,4 +1,5 @@
 from datetime import datetime, timezone
+from typing import Optional
 
 from fastapi import APIRouter, Depends
 from sqlalchemy.orm import Session
@@ -41,7 +42,8 @@ def get_summary(
         if get_machine_status(machine.last_seen_at) == "online"
     )
 
-    def average(values: list[float]) -> float | None:
+    from typing import Optional
+    def average(values: list[float]) -> Optional[float]:
         if not values:
             return None
 
