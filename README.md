@@ -4,6 +4,10 @@ SysPulse is a system monitoring platform that collects machine metrics through a
 
 The project demonstrates backend development, API design, database storage, alert logic, testing, CI, and a simple monitoring dashboard.
 
+## Preview
+
+![SysPulse Dashboard](docs/images/dashboard-preview.png)
+
 ## Features
 
 - Python agent for collecting system metrics
