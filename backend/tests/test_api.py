@@ -1,3 +1,4 @@
+import os
 import sys
 from pathlib import Path
 
@@ -5,6 +6,13 @@ from fastapi.testclient import TestClient
 
 
 PROJECT_ROOT = Path(__file__).resolve().parents[1]
+TEST_DATABASE_PATH = PROJECT_ROOT / "test_syspulse.db"
+
+if TEST_DATABASE_PATH.exists():
+    TEST_DATABASE_PATH.unlink()
+
+os.environ["DATABASE_URL"] = f"sqlite:///{TEST_DATABASE_PATH.as_posix()}"
+
 sys.path.insert(0, str(PROJECT_ROOT))
 
 from main import app  # noqa: E402
