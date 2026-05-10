@@ -6,74 +6,119 @@
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-    <header>
-        <div>
-            <h1>SysPulse</h1>
-            <p>Linux / system monitoring dashboard</p>
-        </div>
-        <div id="refresh-status" class="small">Loading...</div>
-    </header>
-
-    <main>
-        <section class="summary-grid">
-            <div class="summary-card">
-                <p>Total Machines</p>
-                <h2 id="total-machines">-</h2>
+    <div class="app-shell">
+        <aside class="sidebar">
+            <div class="logo">
+                <div class="logo-icon">S</div>
+                <div>
+                    <h1>SysPulse</h1>
+                    <p>System Monitoring</p>
+                </div>
             </div>
 
-            <div class="summary-card">
-                <p>Online Machines</p>
-                <h2 id="online-machines">-</h2>
-            </div>
+            <nav class="nav">
+                <a href="#" class="nav-item active">Dashboard</a>
+                <a href="#machines" class="nav-item">Machines</a>
+                <a href="#alerts" class="nav-item">Alerts</a>
+                <a href="#history" class="nav-item">History</a>
+            </nav>
 
-            <div class="summary-card">
-                <p>Active Alerts</p>
-                <h2 id="active-alerts">-</h2>
+            <div class="sidebar-footer">
+                <p>Backend</p>
+                <span id="backend-status" class="connection-status">Checking...</span>
             </div>
+        </aside>
 
-            <div class="summary-card">
-                <p>Avg CPU</p>
-                <h2 id="avg-cpu">-</h2>
-            </div>
+        <main class="main-content">
+            <header class="topbar">
+                <div>
+                    <p class="eyebrow">Infrastructure overview</p>
+                    <h2>Monitoring Dashboard</h2>
+                </div>
+                <div id="refresh-status" class="refresh-pill">Loading...</div>
+            </header>
 
-            <div class="summary-card">
-                <p>Avg RAM</p>
-                <h2 id="avg-ram">-</h2>
-            </div>
+            <section class="summary-grid">
+                <div class="summary-card">
+                    <p>Total Machines</p>
+                    <h3 id="total-machines">-</h3>
+                    <span class="summary-note">Registered devices</span>
+                </div>
 
-            <div class="summary-card">
-                <p>Avg Disk</p>
-                <h2 id="avg-disk">-</h2>
-            </div>
-        </section>
+                <div class="summary-card">
+                    <p>Online Machines</p>
+                    <h3 id="online-machines">-</h3>
+                    <span class="summary-note">Seen in last 30s</span>
+                </div>
 
-        <section class="grid">
-            <div class="card">
-                <h2>Machines</h2>
-                <div id="machines">Loading...</div>
-            </div>
+                <div class="summary-card">
+                    <p>Active Alerts</p>
+                    <h3 id="active-alerts">-</h3>
+                    <span class="summary-note">Open incidents</span>
+                </div>
 
-            <div class="card">
-                <h2>Latest Metrics</h2>
-                <div id="latest-metrics">Loading...</div>
-            </div>
+                <div class="summary-card">
+                    <p>Average CPU</p>
+                    <h3 id="avg-cpu">-</h3>
+                    <span class="summary-note">Last 10 metrics</span>
+                </div>
 
-            <div class="card">
-                <h2>Active Alerts</h2>
-                <div id="active-alerts-list">Loading...</div>
-            </div>
+                <div class="summary-card">
+                    <p>Average RAM</p>
+                    <h3 id="avg-ram">-</h3>
+                    <span class="summary-note">Last 10 metrics</span>
+                </div>
 
-            <div class="card">
-                <h2>Resolved Alerts</h2>
-                <div id="resolved-alerts-list">Loading...</div>
-            </div>
-        </section>
+                <div class="summary-card">
+                    <p>Average Disk</p>
+                    <h3 id="avg-disk">-</h3>
+                    <span class="summary-note">Last 10 metrics</span>
+                </div>
+            </section>
 
-        <section class="card full-width">
-            <h2>Metrics History</h2>
-            <div id="metrics-history">Loading...</div>
-        </section>
-    </main>
+            <section class="content-grid">
+                <div id="machines" class="panel" data-title="Machines">
+                    <div class="panel-header">
+                        <h3>Machines</h3>
+                        <span class="panel-subtitle">Connected hosts</span>
+                    </div>
+                    <div class="panel-body">Loading...</div>
+                </div>
+
+                <div id="latest-metrics" class="panel" data-title="Latest Metrics">
+                    <div class="panel-header">
+                        <h3>Latest Metrics</h3>
+                        <span class="panel-subtitle">Most recent sample</span>
+                    </div>
+                    <div class="panel-body">Loading...</div>
+                </div>
+
+                <div id="active-alerts-list" class="panel" data-title="Active Alerts">
+                    <div class="panel-header">
+                        <h3>Active Alerts</h3>
+                        <span class="panel-subtitle">Needs attention</span>
+                    </div>
+                    <div class="panel-body">Loading...</div>
+                </div>
+
+                <div id="resolved-alerts-list" class="panel" data-title="Resolved Alerts">
+                    <div class="panel-header">
+                        <h3>Resolved Alerts</h3>
+                        <span class="panel-subtitle">Closed incidents</span>
+                    </div>
+                    <div class="panel-body">Loading...</div>
+                </div>
+            </section>
+
+            <section id="history" class="panel history-panel">
+                <div class="panel-header">
+                    <h3>Metrics History</h3>
+                    <span class="panel-subtitle">Latest collected samples</span>
+                </div>
+                <div id="metrics-history" class="panel-body">Loading...</div>
+            </section>
+        </main>
+    </div>
 
     <script src="app.js"></script>
 </body>

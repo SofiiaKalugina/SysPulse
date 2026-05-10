@@ -28,18 +28,44 @@ function renderSummary(summary) {
     document.getElementById("avg-disk").textContent = formatPercent(summary.avg_disk);
 }
 
+function metricProgress(label, value) {
+    const numericValue = Number(value);
+    const safeValue = Math.min(Math.max(numericValue, 0), 100);
+    const warningClass = safeValue >= 80 ? "progress-warning" : "";
+
+    return `
+        <div class="metric-row">
+            <div class="metric-label">
+                <span>${label}</span>
+                <strong>${formatPercent(safeValue)}</strong>
+            </div>
+            <div class="progress">
+                <div class="progress-fill ${warningClass}" style="width: ${safeValue}%"></div>
+            </div>
+        </div>
+    `;
+}
+
+function getPanelBody(panelId) {
+    return document.querySelector(`#${panelId} .panel-body`);
+}
+
 function renderMachines(machines) {
-    const container = document.getElementById("machines");
+    const container = getPanelBody("machines");
 
     if (machines.length === 0) {
-        container.innerHTML = "<p>No machines found.</p>";
+        container.innerHTML = '<p class="empty-state">No machines found.</p>';
         return;
     }
 
     container.innerHTML = machines.map(machine => `
         <div class="item">
             <strong>${machine.hostname}</strong>
-            <p>Status: <span class="status-${machine.status}">${machine.status}</span></p>
+            <p>
+                <span class="status-pill status-${machine.status}">
+                    ${machine.status}
+                </span>
+            </p>
             <p class="small">OS: ${machine.os_name} ${machine.os_version}</p>
             <p class="small">Last seen: ${machine.last_seen_at}</p>
         </div>
@@ -47,10 +73,10 @@ function renderMachines(machines) {
 }
 
 function renderLatestMetric(metricData) {
-    const container = document.getElementById("latest-metrics");
+    const container = getPanelBody("latest-metrics");
 
     if (metricData.status === "empty") {
-        container.innerHTML = "<p>No metrics received yet.</p>";
+        container.innerHTML = '<p class="empty-state">No metrics received yet.</p>';
         return;
     }
 
@@ -59,10 +85,12 @@ function renderLatestMetric(metricData) {
     container.innerHTML = `
         <div class="item">
             <strong>${metric.hostname}</strong>
-            <p>CPU: ${formatPercent(metric.cpu_percent)}</p>
-            <p>RAM: ${formatPercent(metric.ram_percent)}</p>
-            <p>Disk: ${formatPercent(metric.disk_percent)}</p>
-            <p>Processes: ${metric.process_count}</p>
+
+            ${metricProgress("CPU", metric.cpu_percent)}
+            ${metricProgress("RAM", metric.ram_percent)}
+            ${metricProgress("Disk", metric.disk_percent)}
+
+            <p class="small">Processes: ${metric.process_count}</p>
             <p class="small">Timestamp: ${metric.timestamp}</p>
         </div>
     `;
@@ -77,8 +105,8 @@ function renderAlertItem(alert) {
             </p>
             <p><strong>${alert.metric_name}</strong></p>
             <p>${alert.message}</p>
-            <p>Value: ${formatPercent(alert.metric_value)}</p>
-            <p>Threshold: ${formatPercent(alert.threshold)}</p>
+            <p class="small">Value: ${formatPercent(alert.metric_value)}</p>
+            <p class="small">Threshold: ${formatPercent(alert.threshold)}</p>
             <div class="alert-meta">
                 <p>Created: ${alert.created_at}</p>
                 ${alert.resolved_at ? `<p>Resolved: ${alert.resolved_at}</p>` : ""}
@@ -88,20 +116,20 @@ function renderAlertItem(alert) {
 }
 
 function renderAlerts(alerts) {
-    const activeContainer = document.getElementById("active-alerts-list");
-    const resolvedContainer = document.getElementById("resolved-alerts-list");
+    const activeContainer = getPanelBody("active-alerts-list");
+    const resolvedContainer = getPanelBody("resolved-alerts-list");
 
     const activeAlerts = alerts.filter(alert => alert.status === "active");
     const resolvedAlerts = alerts.filter(alert => alert.status === "resolved");
 
     if (activeAlerts.length === 0) {
-        activeContainer.innerHTML = "<p>No active alerts.</p>";
+        activeContainer.innerHTML = '<p class="empty-state">No active alerts.</p>';
     } else {
         activeContainer.innerHTML = activeAlerts.map(renderAlertItem).join("");
     }
 
     if (resolvedAlerts.length === 0) {
-        resolvedContainer.innerHTML = "<p>No resolved alerts.</p>";
+        resolvedContainer.innerHTML = '<p class="empty-state">No resolved alerts.</p>';
     } else {
         resolvedContainer.innerHTML = resolvedAlerts.map(renderAlertItem).join("");
     }
@@ -111,7 +139,7 @@ function renderHistory(history) {
     const container = document.getElementById("metrics-history");
 
     if (history.length === 0) {
-        container.innerHTML = "<p>No history yet.</p>";
+        container.innerHTML = '<p class="empty-state">No history yet.</p>';
         return;
     }
 
@@ -143,6 +171,18 @@ function renderHistory(history) {
     `;
 }
 
+function setBackendStatus(isOnline) {
+    const statusElement = document.getElementById("backend-status");
+
+    if (isOnline) {
+        statusElement.textContent = "Online";
+        statusElement.className = "connection-status connection-online";
+    } else {
+        statusElement.textContent = "Offline";
+        statusElement.className = "connection-status connection-offline";
+    }
+}
+
 async function loadDashboard() {
     try {
         const summary = await fetchJson("/api/summary");
@@ -157,17 +197,19 @@ async function loadDashboard() {
         renderAlerts(alerts);
         renderHistory(history);
 
+        setBackendStatus(true);
+
         document.getElementById("refresh-status").textContent =
             `Last refresh: ${new Date().toLocaleTimeString()}`;
 
     } catch (error) {
         console.error(error);
 
-        document.getElementById("machines").innerHTML = "<p>Backend unavailable.</p>";
-        document.getElementById("latest-metrics").innerHTML = "<p>Backend unavailable.</p>";
-        document.getElementById("active-alerts-list").innerHTML = "<p>Backend unavailable.</p>";
-        document.getElementById("resolved-alerts-list").innerHTML = "<p>Backend unavailable.</p>";
-        document.getElementById("metrics-history").innerHTML = "<p>Backend unavailable.</p>";
+        getPanelBody("machines").innerHTML = '<p class="empty-state">Backend unavailable.</p>';
+        getPanelBody("latest-metrics").innerHTML = '<p class="empty-state">Backend unavailable.</p>';
+        getPanelBody("active-alerts-list").innerHTML = '<p class="empty-state">Backend unavailable.</p>';
+        getPanelBody("resolved-alerts-list").innerHTML = '<p class="empty-state">Backend unavailable.</p>';
+        document.getElementById("metrics-history").innerHTML = '<p class="empty-state">Backend unavailable.</p>';
 
         document.getElementById("total-machines").textContent = "-";
         document.getElementById("online-machines").textContent = "-";
@@ -175,6 +217,8 @@ async function loadDashboard() {
         document.getElementById("avg-cpu").textContent = "-";
         document.getElementById("avg-ram").textContent = "-";
         document.getElementById("avg-disk").textContent = "-";
+
+        setBackendStatus(false);
 
         document.getElementById("refresh-status").textContent = "Backend unavailable.";
     }
