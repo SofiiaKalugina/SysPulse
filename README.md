@@ -1,5 +1,7 @@
 # SysPulse
 
+![Backend Tests](https://github.com/SofiiaKalugina/SysPulse/actions/workflows/backend-tests.yml/badge.svg)
+
 SysPulse is a system monitoring platform that collects machine metrics through a local Python agent and displays them in a web dashboard.
 
 The project demonstrates backend development, API design, database storage, alert logic, testing, CI, and a simple monitoring dashboard.
