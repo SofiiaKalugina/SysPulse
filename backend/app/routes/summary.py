@@ -16,6 +16,13 @@ router = APIRouter(
 )
 
 
+def average(values: list[float]) -> Optional[float]:
+    if not values:
+        return None
+
+    return round(sum(values) / len(values), 1)
+
+
 @router.get("")
 def get_summary(
     db: Session = Depends(get_db),
@@ -41,13 +48,6 @@ def get_summary(
         1 for machine in machines
         if get_machine_status(machine.last_seen_at) == "online"
     )
-
-    from typing import Optional
-    def average(values: list[float]) -> Optional[float]:
-        if not values:
-            return None
-
-        return round(sum(values) / len(values), 1)
 
     avg_cpu = average([metric.cpu_percent for metric in latest_metrics])
     avg_ram = average([metric.ram_percent for metric in latest_metrics])
