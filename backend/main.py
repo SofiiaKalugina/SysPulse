@@ -2,9 +2,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
 from app.database import Base, engine
-from app.models.alert import Alert
-from app.models.machine import Machine
-from app.models.metric import Metric
+import app.models.base
 from app.routes.alerts import router as alerts_router
 from app.routes.machines import router as machines_router
 from app.routes.metrics import router as metrics_router
