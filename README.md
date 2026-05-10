@@ -156,6 +156,22 @@ python main.py
 
 The agent collects metrics every few seconds and sends them to the backend.
 
+### Agent Configuration
+
+You can configure the agent with environment variables.
+
+Create a `.env` file inside the `agent/` folder:
+
+```env
+BACKEND_URL=http://localhost:8000
+SEND_INTERVAL_SECONDS=5
+```
+
+Available variables:
+
+- `BACKEND_URL` — backend API URL
+- `SEND_INTERVAL_SECONDS` — how often the agent collects and sends metrics
+
 ## Opening the Dashboard
 
 Open this file in a browser:
