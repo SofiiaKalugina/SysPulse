@@ -9,7 +9,6 @@ from app.models.machine import Machine
 from app.models.metric import Metric
 from app.routes.machines import get_machine_status
 
-
 router = APIRouter(
     prefix="/api/summary",
     tags=["summary"],
@@ -21,6 +20,7 @@ def get_summary(
     db: Session = Depends(get_db),
 ) -> dict:
     machines = db.query(Machine).all()
+
     latest_metrics = (
         db.query(Metric)
         .order_by(Metric.id.desc())
@@ -35,6 +35,7 @@ def get_summary(
     )
 
     total_machines = len(machines)
+
     online_machines = sum(
         1 for machine in machines
         if get_machine_status(machine.last_seen_at) == "online"

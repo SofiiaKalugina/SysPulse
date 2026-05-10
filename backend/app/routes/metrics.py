@@ -56,14 +56,14 @@ def receive_metrics(
     alert_result = check_metric_alerts(db, machine, metric)
 
     return {
-     "status": "received",
-     "hostname": metric.hostname,
-     "machine_id": machine.id,
-    "received_at": datetime.now(timezone.utc).isoformat(),     "metric_id": metric.id,
-     "alerts_created": alert_result["alerts_created"],
-     "alerts_resolved": alert_result["alerts_resolved"],
-}
-    
+        "status": "received",
+        "hostname": metric.hostname,
+        "machine_id": machine.id,
+        "received_at": datetime.now(timezone.utc).isoformat(),
+        "metric_id": metric.id,
+        "alerts_created": alert_result["alerts_created"],
+        "alerts_resolved": alert_result["alerts_resolved"],
+    }
 
 
 @router.get("/latest", response_model=MetricResponse | dict)
