@@ -2,12 +2,14 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
 from app.database import Base, engine
-import app.models.base
+from app.models.base import Alert, Machine, Metric
 from app.routes.alerts import router as alerts_router
 from app.routes.machines import router as machines_router
 from app.routes.metrics import router as metrics_router
 from app.routes.summary import router as summary_router
 
+
+_ = (Alert, Machine, Metric)
 
 Base.metadata.create_all(bind=engine)
 

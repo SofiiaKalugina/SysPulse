@@ -1,4 +1,3 @@
-import importlib
 import sys
 from pathlib import Path
 
@@ -8,8 +7,10 @@ from fastapi.testclient import TestClient
 PROJECT_ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(PROJECT_ROOT))
 
-app_module = importlib.import_module("main")
-client = TestClient(app_module.app)
+from main import app  # noqa: E402
+
+
+client = TestClient(app)
 
 
 def sample_metric_payload() -> dict:
