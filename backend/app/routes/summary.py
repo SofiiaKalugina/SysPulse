@@ -1,5 +1,5 @@
 from datetime import datetime, timezone
-from typing import Optional
+from typing import Dict, List, Optional, Union
 
 from fastapi import APIRouter, Depends
 from sqlalchemy.orm import Session
@@ -16,7 +16,7 @@ router = APIRouter(
 )
 
 
-def average(values: list[float]) -> Optional[float]:
+def average(values: List[float]) -> Optional[float]:
     if not values:
         return None
 
@@ -26,7 +26,7 @@ def average(values: list[float]) -> Optional[float]:
 @router.get("")
 def get_summary(
     db: Session = Depends(get_db),
-) -> dict:
+) -> Dict[str, Union[str, int, float, None]]:
     machines = db.query(Machine).all()
 
     latest_metrics = (

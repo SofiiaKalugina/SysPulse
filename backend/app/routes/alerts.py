@@ -1,4 +1,4 @@
-from typing import List
+from typing import List, Optional
 
 from fastapi import APIRouter, Depends
 from sqlalchemy.orm import Session
@@ -15,9 +15,9 @@ router = APIRouter(
 
 @router.get("", response_model=List[AlertResponse])
 def get_alerts(
-    status: str | None = None,
+    status: Optional[str] = None,
     db: Session = Depends(get_db),
-):
+) -> List[Alert]:
     query = db.query(Alert).order_by(Alert.created_at.desc())
 
     if status is not None:
