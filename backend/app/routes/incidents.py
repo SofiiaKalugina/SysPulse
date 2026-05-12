@@ -1,3 +1,5 @@
+from typing import List, Optional
+
 from fastapi import APIRouter, Depends
 from sqlalchemy.orm import Session
 
@@ -14,7 +16,7 @@ router = APIRouter(
 )
 
 
-def get_most_common_alert_type(alerts: list[Alert]) -> str | None:
+def get_most_common_alert_type(alerts: List[Alert]) -> Optional[str]:
     if not alerts:
         return None
 
@@ -27,9 +29,9 @@ def get_most_common_alert_type(alerts: list[Alert]) -> str | None:
 
 
 def build_incident_summary(
-    machines: list[Machine],
-    alerts: list[Alert],
-    latest_metric: Metric | None,
+    machines: List[Machine],
+    alerts: List[Alert],
+    latest_metric: Optional[Metric],
 ) -> str:
     if not machines:
         return "No machines are currently registered. Start the agent to begin collecting system metrics."
@@ -58,18 +60,12 @@ def build_incident_summary(
             f"{len(online_machines)} out of {len(machines)} registered machine(s) are currently online."
         )
     else:
-        summary_parts.append(
-            "No registered machines are currently online."
-        )
+        summary_parts.append("No registered machines are currently online.")
 
     if active_alerts:
-        summary_parts.append(
-            f"There are {len(active_alerts)} active alert(s)."
-        )
+        summary_parts.append(f"There are {len(active_alerts)} active alert(s).")
     else:
-        summary_parts.append(
-            "There are no active alerts at the moment."
-        )
+        summary_parts.append("There are no active alerts at the moment.")
 
     if critical_alerts:
         summary_parts.append(
