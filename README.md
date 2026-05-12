@@ -10,6 +10,76 @@ The project demonstrates backend development, API design, database storage, aler
 
 ![SysPulse Dashboard](docs/images/dashboard-preview.png)
 
+## How to Try It
+
+### 1. Clone the repository
+
+```bash
+git clone https://github.com/SofiiaKalugina/SysPulse.git
+cd SysPulse
+```
+
+---
+
+### 2. Start the backend
+
+Open a terminal:
+
+```bash
+cd backend
+python -m venv venv
+source venv/Scripts/activate
+pip install -r requirements.txt
+uvicorn main:app --reload
+```
+
+Backend will run at:
+
+```text
+http://127.0.0.1:8000
+```
+
+API docs:
+
+```text
+http://127.0.0.1:8000/docs
+```
+
+---
+
+### 3. Start the monitoring agent
+
+Open a second terminal:
+
+```bash
+cd agent
+python -m venv venv
+source venv/Scripts/activate
+pip install -r requirements.txt
+python main.py
+```
+
+The agent will begin collecting and sending system metrics automatically.
+
+---
+
+### 4. Open the dashboard
+
+Open:
+
+```text
+dashboard/index.html
+```
+
+in your browser.
+
+You should now see:
+- live machine metrics
+- CPU/RAM/disk usage
+- alerts
+- machine status
+- metrics history
+
 ## Features
 
 - Python agent for collecting system metrics
