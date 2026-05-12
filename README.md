@@ -4,7 +4,7 @@
 
 SysPulse is a system monitoring platform that collects machine metrics through a local Python agent and displays them in a web dashboard.
 
-The project demonstrates backend development, API design, database storage, alert logic, testing, CI, and a simple monitoring dashboard.
+The project demonstrates backend development, API design, database storage, alert logic, observability concepts, testing, CI, and a simple monitoring dashboard.
 
 ## Preview
 
@@ -65,20 +65,40 @@ The agent will begin collecting and sending system metrics automatically.
 
 ### 4. Open the dashboard
 
-Open:
+Open this file in your browser:
 
 ```text
 dashboard/index.html
 ```
 
-in your browser.
+On Windows, the full local URL may look like:
+
+```text
+file:///C:/Users/your-user/Desktop/syspulse/dashboard/index.html
+```
 
 You should now see:
+
 - live machine metrics
 - CPU/RAM/disk usage
 - alerts
 - machine status
 - metrics history
+- alert intelligence summary
+
+## Observability Extensions
+
+SysPulse includes observability-focused extensions that make the project closer to real monitoring and alerting tools:
+
+- **Alert Intelligence** — analyzes alert patterns, active/resolved alerts, noisy machines and common alert types.
+- **Incident Summary** — generates a short human-readable summary of the current system state.
+- **Prometheus-style Export** — exposes latest metrics in a Prometheus-like text format.
+
+Related writeup:
+
+```text
+docs/writeups/grafana-alert-intelligence.md
+```
 
 ## Features
 
@@ -91,6 +111,9 @@ You should now see:
 - Metrics history
 - Alert system for high CPU, RAM, and disk usage
 - Auto-resolving alerts
+- Alert analytics and noisy machine detection
+- Incident summary generation
+- Prometheus-style metrics export
 - Summary API
 - Web dashboard
 - Backend API tests with pytest
@@ -154,7 +177,8 @@ syspulse/
 │   ├── config.py
 │   ├── main.py
 │   ├── sender.py
-│   └── requirements.txt
+│   ├── requirements.txt
+│   └── .env.example
 │
 ├── backend/
 │   ├── app/
@@ -172,6 +196,12 @@ syspulse/
 │   ├── styles.css
 │   └── app.js
 │
+├── docs/
+│   ├── images/
+│   │   └── dashboard-preview.png
+│   └── writeups/
+│       └── grafana-alert-intelligence.md
+│
 ├── .github/
 │   └── workflows/
 │       └── backend-tests.yml
@@ -186,7 +216,8 @@ syspulse/
 3. The backend validates the data and stores it in the database.
 4. The backend creates or updates the machine record.
 5. The alert system checks CPU, RAM, and disk usage.
-6. The dashboard fetches data from the backend and displays machine status, metrics, alerts, and history.
+6. The dashboard fetches data from the backend and displays machine status, metrics, alerts and history.
+7. Alert Intelligence analyzes alert patterns and generates incident context.
 
 ## Running the Backend
 
@@ -242,20 +273,6 @@ Available variables:
 - `BACKEND_URL` — backend API URL
 - `SEND_INTERVAL_SECONDS` — how often the agent collects and sends metrics
 
-## Opening the Dashboard
-
-Open this file in a browser:
-
-```text
-dashboard/index.html
-```
-
-On Windows, the full local URL may look like:
-
-```text
-file:///C:/Users/your-user/Desktop/syspulse/dashboard/index.html
-```
-
 ## API Endpoints
 
 ### Health
@@ -284,10 +301,40 @@ GET /api/machines
 GET /api/alerts
 ```
 
+### Alert Analytics
+
+```text
+GET /api/alerts/analytics
+```
+
+### Incidents
+
+```text
+GET /api/incidents/summary
+```
+
+### Export
+
+```text
+GET /api/export/prometheus
+```
+
 ### Summary
 
 ```text
 GET /api/summary
+```
+
+## Prometheus-style Export Example
+
+```text
+# HELP syspulse_cpu_percent Current CPU usage percentage.
+# TYPE syspulse_cpu_percent gauge
+syspulse_cpu_percent{hostname="local-workstation"} 13.5
+
+# HELP syspulse_ram_percent Current RAM usage percentage.
+# TYPE syspulse_ram_percent gauge
+syspulse_ram_percent{hostname="local-workstation"} 72.9
 ```
 
 ## Alert Rules
@@ -321,7 +368,7 @@ pytest
 Expected result:
 
 ```text
-7 passed
+10 passed
 ```
 
 ## CI
@@ -340,6 +387,9 @@ Implemented:
 - Metrics history
 - Alert system
 - Auto-resolve alerts
+- Alert analytics
+- Incident summary
+- Prometheus-style export
 - Dashboard
 - Summary API
 - Backend tests
@@ -347,10 +397,11 @@ Implemented:
 
 Planned improvements:
 
-- Better dashboard design
 - PostgreSQL support
 - Docker setup
 - Authentication
 - CSV export
 - Email notifications
 - More detailed charts
+- OpenTelemetry-compatible export
+- Real Grafana dashboard integration
