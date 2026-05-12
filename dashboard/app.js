@@ -183,6 +183,23 @@ function setBackendStatus(isOnline) {
     }
 }
 
+function renderAlertAnalytics(analytics) {
+    document.getElementById("intel-total-alerts").textContent = analytics.total_alerts;
+    document.getElementById("intel-active-alerts").textContent = analytics.active_alerts;
+    document.getElementById("intel-resolved-alerts").textContent = analytics.resolved_alerts;
+
+    document.getElementById("intel-common-alert").textContent =
+        analytics.most_common_alert || "None";
+
+    document.getElementById("intel-noisy-machine").textContent =
+        analytics.noisy_machine || "None";
+}
+
+function renderIncidentSummary(incidentSummary) {
+    document.getElementById("incident-summary-text").textContent =
+        incidentSummary.summary || "No incident summary available.";
+}
+
 async function loadDashboard() {
     try {
         const summary = await fetchJson("/api/summary");
@@ -190,12 +207,16 @@ async function loadDashboard() {
         const latestMetric = await fetchJson("/api/metrics/latest");
         const alerts = await fetchJson("/api/alerts");
         const history = await fetchJson("/api/metrics/history?limit=10");
+        const alertAnalytics = await fetchJson("/api/alerts/analytics");
+        const incidentSummary = await fetchJson("/api/incidents/summary");
 
         renderSummary(summary);
         renderMachines(machines);
         renderLatestMetric(latestMetric);
         renderAlerts(alerts);
         renderHistory(history);
+        renderAlertAnalytics(alertAnalytics);
+        renderIncidentSummary(incidentSummary);
 
         setBackendStatus(true);
 
@@ -217,6 +238,12 @@ async function loadDashboard() {
         document.getElementById("avg-cpu").textContent = "-";
         document.getElementById("avg-ram").textContent = "-";
         document.getElementById("avg-disk").textContent = "-";
+        document.getElementById("intel-total-alerts").textContent = "-";
+        document.getElementById("intel-active-alerts").textContent = "-";
+        document.getElementById("intel-resolved-alerts").textContent = "-";
+        document.getElementById("intel-common-alert").textContent = "-";
+        document.getElementById("intel-noisy-machine").textContent = "-";
+        document.getElementById("incident-summary-text").textContent = "Backend unavailable.";
 
         setBackendStatus(false);
 
