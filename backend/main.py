@@ -9,7 +9,7 @@ from app.routes.incidents import router as incidents_router
 from app.routes.machines import router as machines_router
 from app.routes.metrics import router as metrics_router
 from app.routes.summary import router as summary_router
-
+from app.routes.export import router as export_router
 
 _ = (Alert, Machine, Metric)
 
@@ -35,6 +35,7 @@ app.include_router(alerts_router)
 app.include_router(alert_analytics_router)
 app.include_router(incidents_router)
 app.include_router(summary_router)
+app.include_router(export_router)
 
 
 @app.get("/health")

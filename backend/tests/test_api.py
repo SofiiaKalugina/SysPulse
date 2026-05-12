@@ -125,3 +125,48 @@ def test_summary_endpoint():
     assert "avg_cpu" in data
     assert "avg_ram" in data
     assert "avg_disk" in data
+
+
+def test_alert_analytics_endpoint():
+    response = client.get("/api/alerts/analytics")
+
+    assert response.status_code == 200
+
+    data = response.json()
+
+    assert "total_alerts" in data
+    assert "active_alerts" in data
+    assert "resolved_alerts" in data
+    assert "alerts_by_metric" in data
+    assert "most_common_alert" in data
+    assert "noisy_machine" in data
+
+
+def test_incident_summary_endpoint():
+    client.post("/api/metrics", json=sample_metric_payload())
+
+    response = client.get("/api/incidents/summary")
+
+    assert response.status_code == 200
+
+    data = response.json()
+
+    assert "summary" in data
+    assert isinstance(data["summary"], str)
+    assert len(data["summary"]) > 0
+
+
+def test_prometheus_export_endpoint():
+    client.post("/api/metrics", json=sample_metric_payload())
+
+    response = client.get("/api/export/prometheus")
+
+    assert response.status_code == 200
+    assert "text/plain" in response.headers["content-type"]
+
+    content = response.text
+
+    assert "syspulse_cpu_percent" in content
+    assert "syspulse_ram_percent" in content
+    assert "syspulse_disk_percent" in content
+    assert "syspulse_process_count" in content
