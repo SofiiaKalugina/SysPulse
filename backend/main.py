@@ -7,7 +7,7 @@ from app.routes.alerts import router as alerts_router
 from app.routes.machines import router as machines_router
 from app.routes.metrics import router as metrics_router
 from app.routes.summary import router as summary_router
-
+from app.routes.incidents import router as incidents_router
 
 _ = (Alert, Machine, Metric)
 
